@@ -157,7 +157,7 @@ public class XpGrapherPlugin extends Plugin {
 			resetData();
 		}
 
-		overlay.setPosition(config.overlayPosition());
+
 
 	}
 

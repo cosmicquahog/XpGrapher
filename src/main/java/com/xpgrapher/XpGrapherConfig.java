@@ -55,17 +55,6 @@ public interface XpGrapherConfig extends Config
 
 	@ConfigItem(
 			position = 4,
-			keyName = "overlayPosition",
-			name = "Overlay Position",
-			description = "Choose where to display the graph"
-	)
-	default OverlayPosition overlayPosition()
-	{
-		return OverlayPosition.ABOVE_CHATBOX_RIGHT;
-	}
-
-	@ConfigItem(
-			position = 5,
 			keyName = "goalXPExists",
 			name = "Goal XP",
 			description = "Set the graph maxiumum to and XP goal"
@@ -76,7 +65,7 @@ public interface XpGrapherConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 6,
+			position = 5,
 			keyName = "goalXP",
 			name = "Goal XP",
 			description = "If xp goal is toggled, this will be the graph max XP"
@@ -87,7 +76,7 @@ public interface XpGrapherConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 7,
+			position = 6,
 			keyName = "sessionTimeSet",
 			name = "Choose to set a session time or not",
 			description = "If this is on, the graph width will be the set time frame. Otherwise it's the entire session."
@@ -98,7 +87,7 @@ public interface XpGrapherConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 8,
+			position = 7,
 			keyName = "sessionLength",
 			name = "Session Length (minutes)",
 			description = "The width of the graph is the set length of time. Only if 'session time' toggled on."
@@ -107,4 +96,6 @@ public interface XpGrapherConfig extends Config
 	{
 		return 1;
 	}
+
+	//default OverlayPosition overlayPosition() {return OverlayPosition.ABOVE_CHATBOX_RIGHT;}
 }
