@@ -4,7 +4,6 @@ import net.runelite.api.Skill;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-import net.runelite.client.ui.overlay.OverlayPosition;
 
 @ConfigGroup("xpgrapher")
 public interface XpGrapherConfig extends Config
@@ -72,7 +71,7 @@ public interface XpGrapherConfig extends Config
 	)
 	default int goalXP()
 	{
-		return 5000000;
+		return 13034431;
 	}
 
 	@ConfigItem(
@@ -94,8 +93,18 @@ public interface XpGrapherConfig extends Config
 	)
 	default int sessionLength()
 	{
-		return 1;
+		return 5;
 	}
 
-	//default OverlayPosition overlayPosition() {return OverlayPosition.ABOVE_CHATBOX_RIGHT;}
+	@ConfigItem(
+			position = 8,
+			keyName = "verticalDivisions",
+			name = " # Vertical Divisions",
+			description = "Choose the number of vertical divisions"
+	)
+	default int verticalDivisions()
+	{
+		return 2;
+	}
+
 }
