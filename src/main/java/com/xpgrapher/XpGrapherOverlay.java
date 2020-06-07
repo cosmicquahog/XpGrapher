@@ -55,7 +55,9 @@ public class XpGrapherOverlay extends OverlayPanel {
                 int xpAtMarkStringHeight = graphics.getFontMetrics().getHeight();
                 graphics.setColor(Color.WHITE);
                 String xpAtMarkStringFormatted = formatter.format(xpAtMark);
-                graphics.drawString(xpAtMarkStringFormatted, -xpAtMarkStringWidth-10, i*grapherPlugin.height/numberOfDivisions + xpAtMarkStringHeight/2);
+                int xpAtNextMark = grapherPlugin.maximumXp - xpRange/numberOfDivisions*(i+1);
+                if (xpAtNextMark != xpAtMark)
+                    graphics.drawString(xpAtMarkStringFormatted, grapherPlugin.width+5, i*grapherPlugin.height/numberOfDivisions + xpAtMarkStringHeight/2 - 4);
             }
             graphics.setColor(Color.WHITE);
             int xpAtBottom = grapherPlugin.minimumXp;
@@ -65,7 +67,7 @@ public class XpGrapherOverlay extends OverlayPanel {
 
 
             String xpAtBottomStringFormatted = formatter.format(xpAtBottom);
-            graphics.drawString(xpAtBottomStringFormatted, -xpAtBottomStringWidth-10, grapherPlugin.height + xpAtBottomStringHeight/2);
+            graphics.drawString(xpAtBottomStringFormatted, grapherPlugin.width+5, grapherPlugin.height + xpAtBottomStringHeight/2 - 4);
 
 
 
@@ -77,6 +79,9 @@ public class XpGrapherOverlay extends OverlayPanel {
                 int x = point[0];
                 int y = point[1];
                 if (y < grapherPlugin.height && y >= 0)
+                    graphics.setColor(new Color(255,255,255,50));
+                    graphics.drawLine(x, grapherPlugin.height, x, y);
+                    graphics.setColor(Color.WHITE);
                     graphics.drawLine(x, y, x, y);
                 if (oldX != -1 && oldY != -1) {
                     graphics.drawLine(oldX+1, oldY, x, y);
@@ -85,7 +90,7 @@ public class XpGrapherOverlay extends OverlayPanel {
                 oldX = x;
                 oldY = y;
             }
-            String skillName = grapherPlugin.getConfig().skillToGraph().getName();
+            String skillName = grapherPlugin.getConfig().skillToGraph().getName() + " XP";
             int skillNameWidth = graphics.getFontMetrics().stringWidth(skillName);
             int skillNameHeight = graphics.getFontMetrics().getHeight();
 
