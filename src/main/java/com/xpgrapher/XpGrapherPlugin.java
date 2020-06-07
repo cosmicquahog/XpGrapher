@@ -8,6 +8,7 @@ import net.runelite.api.Skill;
 import net.runelite.api.events.GameTick;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 
 @Slf4j
 @PluginDescriptor(
-	name = "XP Grapher"
+		name = "XP Grapher"
 )
 public class XpGrapherPlugin extends Plugin {
 
@@ -43,10 +44,8 @@ public class XpGrapherPlugin extends Plugin {
 	public ArrayList<Integer> xpList = new ArrayList<Integer>();
 	public ArrayList<Integer[]> graphPoints = new ArrayList<Integer[]>();
 
-	private int fletchXpPerHour = 700000;
-	private double fletchXpPerMinute = (double)fletchXpPerHour/60;
-	private double fletchXpPerSecond = fletchXpPerMinute/60;
-	private double fletchXpPerTick = fletchXpPerSecond*0.61;
+	public int minimumXp = -1;
+	public int maximumXp = -1;
 
 	@com.google.inject.Inject
 	private XpGrapherOverlay overlay;
@@ -69,23 +68,20 @@ public class XpGrapherPlugin extends Plugin {
 	@Subscribe
 	public void onGameTick(GameTick tick)
 	{
-		//System.out.println(fletchXpPerSecond);
 
 		skillXP = client.getSkillExperience((skillToGraph));
 		xpList.add(skillXP);
 
 		update(xpList);
-		//for (int i = 0; i < graphPoints.size(); i++) {
-		//    int x = (int)(graphPoints.get(i)[0]);
-		//    int y = (int)(graphPoints.get(i)[1]);
-		//
-		//}
 
 		tickNum++;
 	}
 
-	public void update(ArrayList xpList) {
+	public XpGrapherConfig getConfig() {
+		return config;
+	}
 
+	public void update(ArrayList xpList) {
 		width = config.graphWidth();
 		height = config.graphHeight();
 
@@ -138,7 +134,8 @@ public class XpGrapherPlugin extends Plugin {
 			Integer[] newEntry = {x, y};
 			newList.add(newEntry);
 
-
+			minimumXp = minXp;
+			maximumXp = maxXp;
 
 		}
 
@@ -146,11 +143,8 @@ public class XpGrapherPlugin extends Plugin {
 
 		graphPoints = newList;
 
-		if (config.resetGraph()) {
-			resetData();
-		}
-
 		Skill theSkill = config.skillToGraph();
+
 		//check if the tracked skill changed
 		if (theSkill != skillToGraph) {
 			skillToGraph = theSkill;
@@ -159,6 +153,14 @@ public class XpGrapherPlugin extends Plugin {
 
 
 
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged configChangedEvent)
+	{
+
+		if (((String)configChangedEvent.getKey()).compareTo("resetGraph") == 0 && config.resetGraph() == true)
+			resetData();
 	}
 
 	private void resetData() {
