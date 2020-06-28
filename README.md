@@ -1,9 +1,7 @@
 # Real Time XP Graphs
 
-https://imgur.com/a/LkFPUly
+https://imgur.com/rhIB0EM
 
 Alt+Drag to move
-
-Select skill in settings
 
 Resize in settings
