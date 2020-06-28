@@ -130,7 +130,7 @@ public class XpGrapherPlugin extends Plugin {
 			}
 		}
 
-		System.out.println(tickCount);
+		//System.out.println(tickCount);
 		//System.out.println("fletching xp from data manager " + xpDataManager.getXpData(Skill.FLETCHING, tickCount));
 		//System.out.println("y value from graph manager " + xpGraphPointManager.getGraphPointData(Skill.FLETCHING, tickCount));
 
