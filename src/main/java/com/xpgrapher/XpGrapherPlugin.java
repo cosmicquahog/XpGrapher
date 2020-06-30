@@ -15,6 +15,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 
+import java.awt.*;
 import java.sql.Time;
 import java.util.ArrayList;
 
@@ -28,9 +29,10 @@ public class XpGrapherPlugin extends Plugin {
 	private Client client;
 
 	@Inject
-	private XpGrapherConfig config;
+	public XpGrapherConfig config;
 
 	public Skill[] skillList;
+	public Skill mostRecentSkillGained;
 
 	public int tickCount = 0;
 	public long startTime = 0;
@@ -44,7 +46,7 @@ public class XpGrapherPlugin extends Plugin {
 
 	public int numVerticalDivisions = 5;
 
-	public int maxNumberOfGraphedSkills = 8;
+	//public int maxNumberOfGraphedSkills = 8;
 	public ArrayList<Skill> currentlyGraphedSkills = new ArrayList<Skill>();
 
 	private boolean lastTickResetGraphSwitch = false;
@@ -53,10 +55,12 @@ public class XpGrapherPlugin extends Plugin {
 	public boolean startMessageDisplaying = true;
 
 	@Provides
-	XpGrapherConfig provideConfig(ConfigManager configManager)
+	XpGrapherConfig getConfig(ConfigManager configManager)
 	{
 		return configManager.getConfig(XpGrapherConfig.class);
 	}
+
+
 
 	@com.google.inject.Inject
 	private XpGrapherOverlay overlay;
@@ -94,12 +98,13 @@ public class XpGrapherPlugin extends Plugin {
 	}
 
 	public void graphSkill(Skill skillToAdd) {
+		mostRecentSkillGained = skillToAdd;
 		if (!isSkillCurrentlyGraphed(skillToAdd)) {
-			if (currentlyGraphedSkills.size() < maxNumberOfGraphedSkills) {
+			if (currentlyGraphedSkills.size() < config.maxSkillsToGraph()) {
 				currentlyGraphedSkills.add(skillToAdd);
 				xpGraphPointManager.isSkillShownMap.put(skillToAdd, true);
 			} else {
-				while(currentlyGraphedSkills.size() > maxNumberOfGraphedSkills)
+				while(currentlyGraphedSkills.size() > config.maxSkillsToGraph())
 					removeSkill();
 				currentlyGraphedSkills.add(skillToAdd);
 				xpGraphPointManager.isSkillShownMap.put(skillToAdd, true);
@@ -123,8 +128,8 @@ public class XpGrapherPlugin extends Plugin {
 		xpDataManager.update();
 		xpGraphPointManager.update();
 
-		if (currentlyGraphedSkills.size() > maxNumberOfGraphedSkills) {
-			int excessAmount = currentlyGraphedSkills.size() - maxNumberOfGraphedSkills;
+		if (currentlyGraphedSkills.size() > config.maxSkillsToGraph()) {
+			int excessAmount = currentlyGraphedSkills.size() - config.maxSkillsToGraph();
 			for (int i = 0; i <  excessAmount; i++) {
 				removeSkill();
 			}
@@ -149,6 +154,7 @@ public class XpGrapherPlugin extends Plugin {
 		xpDataManager = new XpDataManager(this);
 		xpGraphPointManager = new XpGraphPointManager(this);
 		startTime = System.currentTimeMillis();
+		currentlyGraphedSkills = new ArrayList<Skill>();
 		tickCount = 0;
 	}
 
