@@ -53,4 +53,9 @@ public class XpDataManager {
         return xpValueAtTickNum;
     }
 
+    public int getMostRecentXp(Skill skillToGet) {
+        ArrayList<Integer> xpListToGet = skillXpMap.get(skillToGet);
+        return xpListToGet.get(xpListToGet.size()-1);
+    }
+
 }
