@@ -11,6 +11,7 @@ public class XpGraphColorManager {
     private XpGrapherPlugin grapherPlugin;
 
     private Color[] skillColorData = {
+
             //attack
             new Color(79,143,35),
             //Defence
@@ -69,7 +70,61 @@ public class XpGraphColorManager {
     }
 
     public Color getSkillColor(Skill skill) {
-        return skillColorMap.get(skill);
+        //return skillColorMap.get(skill);
+        if (skill.getName() == "Attack")
+            return grapherPlugin.config.attackColor();
+        else if (skill.getName() == "Strength")
+            return grapherPlugin.config.strengthColor();
+        else if (skill.getName() == "Defence")
+            return grapherPlugin.config.defenceColor();
+        else if (skill.getName() == "Ranged")
+            return grapherPlugin.config.rangedColor();
+        else if (skill.getName() == "Prayer")
+            return grapherPlugin.config.prayerColor();
+
+        else if (skill.getName() == "Magic")
+            return grapherPlugin.config.magicColor();
+        else if (skill.getName() == "Runecraft")
+            return grapherPlugin.config.runecraftColor();
+        else if (skill.getName() == "Construction")
+            return grapherPlugin.config.constructionColor();
+        else if (skill.getName() == "Hitpoints")
+            return grapherPlugin.config.hitpointsColor();
+        else if (skill.getName() == "Agility")
+            return grapherPlugin.config.agilityColor();
+
+        else if (skill.getName() == "Herblore")
+            return grapherPlugin.config.herbloreColor();
+        else if (skill.getName() == "Thieving")
+            return grapherPlugin.config.thievingColor();
+        else if (skill.getName() == "Crafting")
+            return grapherPlugin.config.craftingColor();
+        else if (skill.getName() == "Fletching")
+            return grapherPlugin.config.fletchingColor();
+        else if (skill.getName() == "Slayer")
+            return grapherPlugin.config.slayerColor();
+        else if (skill.getName() == "Hunter")
+            return grapherPlugin.config.hunterColor();
+        else if (skill.getName() == "Mining")
+            return grapherPlugin.config.miningColor();
+        else if (skill.getName() == "Smithing")
+            return grapherPlugin.config.smithingColor();
+        else if (skill.getName() == "Fishing")
+            return grapherPlugin.config.fishingColor();
+        else if (skill.getName() == "Cooking")
+            return grapherPlugin.config.cookingColor();
+
+        else if (skill.getName() == "Firemaking")
+            return grapherPlugin.config.firemakingColor();
+        else if (skill.getName() == "Woodcutting")
+            return grapherPlugin.config.woodcuttingColor();
+        else if (skill.getName() == "Farming")
+            return grapherPlugin.config.farmingColor();
+        return Color.BLACK;
+    }
+
+    public void setSkillColor(Skill skill, Color color) {
+        skillColorMap.put(skill, color);
     }
 
 }
