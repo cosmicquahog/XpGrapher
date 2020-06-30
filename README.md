@@ -1,6 +1,7 @@
 # Real Time XP Graphs
 
-![](https://i.imgur.com/rhIB0EM.gif)
+![](https://i.imgur.com/qxtw72v.gif)
+
 
 Gain XP to start 
 
