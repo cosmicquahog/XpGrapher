@@ -23,8 +23,8 @@ public class XpGrapherOverlay extends OverlayPanel {
     private int divisionLineThickness = 1;
 
     private Color textColor = Color.WHITE;
-    private Color graphLineColor = new Color(56, 36, 24);
-    private Color backgroundColor = new Color(132, 109,  71, 200);
+    private Color graphLineColor;
+    private Color backgroundColor;
 
     private int marginGraphLeft = 43;
     private int marginGraphTop = 11;
@@ -32,17 +32,23 @@ public class XpGrapherOverlay extends OverlayPanel {
     private int marginGraphBottom = 30;
     private int marginTimeLabelTop = 7;
 
+    private int marginOverlayRight = 5;
+
     //private int marginStartMessageTop = 12;
     private int marginStartMessageBottom = 8;
 
     private int marginLegendRight = 12;
     private int marginLegendTop = 8;
+    private int marginLegendLeft = 10;
     private int marginLegendBoxBottom = 2;
     private int marginLegendBoxRight = 4;
     private int marginLegendBoxLeft = 4;
     private int marginLegendBoxTop = 2;
+    private int marginLegendBottom = 3;
     private int legendBoxSize = 10;
+
     private int legendWidth = 93;
+    private int legendHeight = 20;
 
     private int marginVertAxisValueRight = 4;
 
@@ -52,9 +58,10 @@ public class XpGrapherOverlay extends OverlayPanel {
     private XpGrapherOverlay(Client client, XpGrapherPlugin grapherPlugin) {
         this.client = client;
         this.grapherPlugin = grapherPlugin;
+        graphLineColor = grapherPlugin.config.graphColor();
+        backgroundColor = grapherPlugin.config.graphBackgroundColor();
         setLayer(OverlayLayer.ABOVE_WIDGETS);
         setPosition(OverlayPosition.BOTTOM_LEFT);
-
     }
 
     private String formatXpString(int xpToFormat) {
@@ -94,8 +101,6 @@ public class XpGrapherOverlay extends OverlayPanel {
             result = formattedXpString;
         }
 
-
-
         return result;
     }
 
@@ -103,17 +108,31 @@ public class XpGrapherOverlay extends OverlayPanel {
 
         @Override
         public Dimension render(Graphics2D graphics) {
-            setPosition(OverlayPosition.BOTTOM_LEFT);
+
+            graphLineColor = grapherPlugin.config.graphColor();
+            backgroundColor = grapherPlugin.config.graphBackgroundColor();
+
+            if (!grapherPlugin.config.displayKey()) {
+                int currentWidth = this.getBounds().width;
+                int currentHeight = this.getBounds().height;
+                //this.setBounds(new Rectangle(currentWidth - legendWidth, currentHeight));
+                //this.setPreferredSize(new Dimension(currentWidth - legendWidth, currentHeight));
+                //setBounds(new Rectangle(50, 50));
+
+            }
+
             //overlay background box
             graphics.setColor(backgroundColor);
-            graphics.fillRect(0, 0, this.getBounds().width, this.getBounds().height);
+            //graphics.fillRect(0, 0, this.getBounds().width, this.getBounds().height);
+            graphics.fillRect(0, 0, marginGraphLeft+grapherPlugin.graphWidth+marginGraphRight+marginOverlayRight, this.getBounds().height);
+
 
             //overlay border box
             graphics.setColor(graphLineColor);
             int borderX = 0;
             int borderY = 0;
-            graphics.drawRect(borderX, borderY, this.getBounds().width, this.getBounds().height);
-            graphics.drawRect(borderX+1, borderY+1, this.getBounds().width-2, this.getBounds().height-2);
+            graphics.drawRect(borderX, borderY, marginGraphLeft+grapherPlugin.graphWidth+marginGraphRight+marginOverlayRight, this.getBounds().height);
+            graphics.drawRect(borderX+1, borderY+1, marginGraphLeft+grapherPlugin.graphWidth+marginGraphRight+marginOverlayRight-2, this.getBounds().height-2);
 
             //graph border box
             borderX = marginGraphLeft;
@@ -170,7 +189,7 @@ public class XpGrapherOverlay extends OverlayPanel {
 
                         if (oldX != -1 && y >= 0) {
                             graphics.drawLine(marginGraphLeft+oldX, marginGraphTop+oldY, marginGraphLeft+x-1, marginGraphTop+y);
-                            graphics.drawLine(marginGraphLeft+oldX+1, marginGraphTop+oldY, marginGraphLeft+x, marginGraphTop+y);
+                            graphics.drawLine(marginGraphLeft+oldX-1, marginGraphTop+oldY, marginGraphLeft+x-2, marginGraphTop+y);
                         }
                         oldX = x;
                         oldY = y;
@@ -178,41 +197,55 @@ public class XpGrapherOverlay extends OverlayPanel {
 
                 }
 
-
-
             }
 
-            //legend border box
-            int legendX = marginGraphLeft+grapherPlugin.graphWidth+marginGraphRight;
-            int legendY = marginGraphTop;
-            graphics.setColor(graphLineColor);
-            graphics.drawRect(legendX, legendY, legendWidth, grapherPlugin.graphHeight);
-            graphics.drawRect(legendX-1, legendY-1, legendWidth+2, grapherPlugin.graphHeight+2);
+            int legendSkillCount =  grapherPlugin.currentlyGraphedSkills.size();
 
-            //legend boxes and labels
-            int legendYOffset = marginGraphTop+2*marginLegendBoxTop-1;
-            for (int i = 0; i < grapherPlugin.skillList.length; i++) {
-                Skill theSkill = grapherPlugin.skillList[i];
-                if (grapherPlugin.isSkillShown(theSkill)) {
-                    //graphics.setColor(dataLineColors[i]);
-                    Color skillColor = grapherPlugin.xpGraphColorManager.getSkillColor(theSkill);
-                    graphics.setColor(skillColor);
-                    int legendBoxX = legendX + marginLegendBoxLeft;
-                    graphics.fillRect(legendBoxX, legendYOffset, legendBoxSize, legendBoxSize);
-                    graphics.setColor(Color.BLACK);
-                    graphics.drawRect(legendBoxX, legendYOffset, legendBoxSize, legendBoxSize);
-                    legendYOffset += legendBoxSize + marginLegendBoxBottom;
+            if (grapherPlugin.config.displayKey() && legendSkillCount > 0) {
 
-                    graphics.setColor(graphLineColor);
-                    String skillName = theSkill.getName();
-                    int skillNameHeight = graphics.getFontMetrics().getHeight();
-                    int skillNameX = legendBoxX + legendBoxSize + marginLegendBoxRight;
-                    int skillNameY = legendYOffset;
-                    graphics.drawString(skillName, skillNameX, skillNameY);
+                //legendHeight = legendSkillCount*(legendBoxSize + marginLegendBoxTop + marginLegendBoxBottom) + marginLegendBottom;
+                legendHeight = 12*legendSkillCount + 6;
+                int legendX = marginGraphLeft+grapherPlugin.graphWidth+marginGraphRight+marginLegendLeft;
+                int legendY = marginGraphTop;
+
+                //legend background box
+                graphics.setColor(backgroundColor);
+                graphics.fillRect(legendX, legendY, legendWidth, legendHeight);
+
+                //legend border box
+                graphics.setColor(graphLineColor);
+                graphics.drawRect(legendX, legendY, legendWidth, legendHeight);
+                graphics.drawRect(legendX-1, legendY-1, legendWidth+2, legendHeight+2);
+
+
+                //legend boxes and labels
+                int legendYOffset = marginGraphTop+2*marginLegendBoxTop-1;
+                for (int i = 0; i < grapherPlugin.skillList.length; i++) {
+                    Skill theSkill = grapherPlugin.skillList[i];
+                    if (grapherPlugin.isSkillShown(theSkill)) {
+                        //graphics.setColor(dataLineColors[i]);
+                        Color skillColor = grapherPlugin.xpGraphColorManager.getSkillColor(theSkill);
+                        graphics.setColor(skillColor);
+                        int legendBoxX = legendX + marginLegendBoxLeft;
+                        graphics.fillRect(legendBoxX, legendYOffset, legendBoxSize, legendBoxSize);
+                        graphics.setColor(Color.BLACK);
+                        graphics.drawRect(legendBoxX, legendYOffset, legendBoxSize, legendBoxSize);
+                        legendYOffset += legendBoxSize + marginLegendBoxBottom;
+
+                        graphics.setColor(graphLineColor);
+                        String skillName = theSkill.getName();
+                        int skillNameHeight = graphics.getFontMetrics().getHeight();
+                        int skillNameX = legendBoxX + legendBoxSize + marginLegendBoxRight;
+                        int skillNameY = legendYOffset;
+                        graphics.drawString(skillName, skillNameX, skillNameY);
+                    }
                 }
             }
 
+
+
             //bottom axis tick marks
+            graphics.setColor(graphLineColor);
             int bottomLeftGraphX = marginGraphLeft;
             int bottomLeftGraphY = marginGraphTop+grapherPlugin.graphHeight;
             graphics.drawLine(bottomLeftGraphX, bottomLeftGraphY, bottomLeftGraphX, bottomLeftGraphY + bottomAxisTickMarkLength);
@@ -239,13 +272,42 @@ public class XpGrapherOverlay extends OverlayPanel {
             int timeEndLabelHeight = graphics.getFontMetrics().getHeight();
             graphics.drawString(timeEndLabel, bottomRightGraphX-timeEndLabelWidth/2, bottomLeftGraphY+timeEndLabelHeight+marginTimeLabelTop);
 
+            //xp rate data
+            if (grapherPlugin.currentlyGraphedSkills.size() > 0) {
+                int endingSkillXp;
+                if (grapherPlugin.tickCount > 0)
+                    endingSkillXp = grapherPlugin.xpDataManager.getXpData(grapherPlugin.mostRecentSkillGained, grapherPlugin.tickCount-1);
+                else
+                    endingSkillXp = grapherPlugin.xpDataManager.getXpData(grapherPlugin.mostRecentSkillGained, 0);
+                int startingSkillXp = grapherPlugin.xpDataManager.getXpData(grapherPlugin.mostRecentSkillGained, 0);
+                int xpGained = endingSkillXp - startingSkillXp;
+                long msPassed = System.currentTimeMillis() - grapherPlugin.startTime;
+                long secPassed = msPassed/1000;
+                double xpPerSecond = (double)xpGained/secPassed;
+                double xpPerHour = xpPerSecond*60*60;
+                String skillName = grapherPlugin.mostRecentSkillGained.getName();
+                DecimalFormat formatter = new DecimalFormat("###,###,###");
+                String skillInfoXpRate = formatter.format((int)xpPerHour);
+                String skillInfo = skillName + " XP/hr: " + skillInfoXpRate;
+                int skillInfoWidth = graphics.getFontMetrics().stringWidth(skillInfo);
+                int skillInfoHeight = graphics.getFontMetrics().getHeight();
+                //int skillInfoY = grapherPlugin.graphHeight+marginGraphTop+marginGraphBottom+bottomAxisTickMarkLength-skillInfoHeight/2;
+                int skillInfoY = bottomLeftGraphY+timeEndLabelHeight+marginTimeLabelTop;
+                int skillInfoX = marginGraphLeft+grapherPlugin.graphWidth/2-skillInfoWidth/2;
+                graphics.drawString(skillInfo, skillInfoX, skillInfoY);
+            }
+
             //show message to start skilling to start the graph
-            if (legendYOffset == marginGraphTop+2*marginLegendBoxTop-1) {
+            //if (legendYOffset == marginGraphTop+2*marginLegendBoxTop-1) {
+            if (grapherPlugin.currentlyGraphedSkills.size() == 0) {
 
                 grapherPlugin.startMessageDisplaying = true;
 
-                int overlayWidth = grapherPlugin.graphWidth+marginGraphRight+marginGraphLeft+legendWidth+marginLegendRight;
-                int overlayHeight = marginGraphTop+grapherPlugin.graphHeight+marginGraphBottom;
+                //0, 0, marginGraphLeft+grapherPlugin.graphWidth+marginGraphRight+marginOverlayRight, this.getBounds().height
+                //int overlayWidth = grapherPlugin.graphWidth+marginGraphRight+marginGraphLeft+legendWidth+marginLegendRight;
+                //int overlayHeight = marginGraphTop+grapherPlugin.graphHeight+marginGraphBottom;
+                int overlayWidth = marginGraphLeft+grapherPlugin.graphWidth+marginGraphRight+marginOverlayRight;
+                int overlayHeight = this.getBounds().height;
 
                 int messageHeight = graphics.getFontMetrics().getHeight();
 
@@ -273,8 +335,8 @@ public class XpGrapherOverlay extends OverlayPanel {
                 graphics.setColor(new Color(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue(), 200));
                 //graphics.fillRect(marginGraphLeft+1, marginGraphRight, grapherPlugin.graphWidth+marginGraphRight+legendWidth-1, grapherPlugin.graphHeight-1);
                 graphics.fillRect(1, 1,
-                        grapherPlugin.graphWidth+marginGraphRight+marginGraphLeft+legendWidth+marginLegendRight-1,
-                        marginGraphTop+grapherPlugin.graphHeight+marginGraphBottom-1
+                        overlayWidth-1,
+                        overlayHeight-1
                 );
 
 
@@ -286,6 +348,8 @@ public class XpGrapherOverlay extends OverlayPanel {
             } else {
                 grapherPlugin.startMessageDisplaying = false;
             }
+
+
 
             return new Dimension(this.getBounds().width, this.getBounds().height);
 
