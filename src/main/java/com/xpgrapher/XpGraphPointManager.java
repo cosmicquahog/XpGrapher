@@ -100,17 +100,30 @@ public class XpGraphPointManager {
                 double ratioAcrossGraph = (double)x/((double)grapherPlugin.graphWidth);
 
                 int dataIndex = (int)(Math.floor(ratioAcrossGraph*(grapherPlugin.tickCount+1)));
+
                 //int ceilDataIndex = (int)(Math.ceil(ratioAcrossGraph*(grapherPlugin.tickCount)));
                 //int floorDataIndex = (int)(Math.floor(ratioAcrossGraph*(grapherPlugin.tickCount)));
                 //System.out.println(ceilDataIndex + ", " + floorDataIndex);
 
-
                 int dataXpValue = grapherPlugin.xpDataManager.getXpData(skillToUpdate, dataIndex);
+                if (x == 0) {
+                    dataXpValue = grapherPlugin.xpDataManager.getXpData(skillToUpdate, 0);
+                }
+                if (x == grapherPlugin.graphWidth - 1) {
+                    dataXpValue = grapherPlugin.xpDataManager.getMostRecentXp(skillToUpdate);
+                }
+
                 int dataXpMinValue = grapherPlugin.xpDataManager.getXpData(skillToUpdate, 0);
                 int dataXpGained = dataXpValue -  dataXpMinValue;
 
                 double ratioVertical = dataXpGained/(double) maxVertAxisValue;
                 int y = grapherPlugin.graphHeight - (int)((double)grapherPlugin.graphHeight*ratioVertical);
+
+                //if (x == grapherPlugin.graphWidth-1) {
+                //
+                //    dataXpValue = grapherPlugin.getClient().getSkillExperience(skillToUpdate);
+                //
+                //}
 
                 newGraphPointList.add(y);
 
