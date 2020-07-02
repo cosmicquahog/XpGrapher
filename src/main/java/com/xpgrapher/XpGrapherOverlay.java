@@ -28,7 +28,7 @@ public class XpGrapherOverlay extends OverlayPanel {
 
     private int marginGraphLeft = 43;
     private int marginGraphTop = 11;
-    private int marginGraphRight = 12;
+    private int marginGraphRight = 24;
     private int marginGraphBottom = 30;
     private int marginTimeLabelTop = 7;
 
@@ -62,6 +62,28 @@ public class XpGrapherOverlay extends OverlayPanel {
         backgroundColor = grapherPlugin.config.graphBackgroundColor();
         setLayer(OverlayLayer.ABOVE_WIDGETS);
         setPosition(OverlayPosition.BOTTOM_LEFT);
+
+    }
+
+    private String formatTime(long timePassed) {
+        int secondsPassed = (int)timePassed/1000;
+        int hours = secondsPassed/(60*60);
+        int secondsLeft = secondsPassed%(60*60);
+        int minutes = secondsLeft/60;
+        int seconds = secondsLeft%60;
+
+        String result = "";
+        if (hours > 0)
+            result += hours + ":";
+        if (minutes > 0 || hours > 0) {
+            if (minutes < 10 && hours > 0)
+                result += "0";
+            result += minutes + ":";
+        }
+        if (seconds < 10 && (minutes > 0|| hours > 0))
+            result += "0";
+        result += seconds;
+        return result;
     }
 
     private String formatXpString(int xpToFormat) {
@@ -71,38 +93,46 @@ public class XpGrapherOverlay extends OverlayPanel {
         if (xpToFormat < 1000)
             result = Integer.toString(xpToFormat);
         else if (xpToFormat < 1000000) {
+
             int xpInK = xpToFormat/1000;
-            String decimalString = Integer.toString(xpToFormat).substring(1);
-            String formattedDecimalString = decimalString.substring(0, 2);
-            String formattedXpString = xpInK + "." + formattedDecimalString;
-            if (formattedXpString.length() > 4) {
-                formattedXpString = formattedXpString.substring(0, 4);
-            }
-            if ((Character.toString(formattedXpString.charAt(formattedXpString.length()-1))).equals(".")) {
-                formattedXpString = formattedXpString.substring(0, formattedXpString.length()-1);
+            int decimalPart = xpToFormat%1000;
+            //System.out.println(xpToFormat + ", " + xpInK + ", " + decimalPart);
+            result = Integer.toString(xpInK);
+            if (decimalPart > 0) {
+                result = result + "." + decimalPart;
+                while (result.charAt(result.length()-1) == '0')
+                    result = result.substring(0, result.length()-1);
             }
 
-            formattedXpString += "K";
-            result = formattedXpString;
+
+            result = result + "K";
+
         }
         else {
             int xpInM = xpToFormat/1000000;
-            String decimalString = Integer.toString(xpToFormat).substring(1);
-            String formattedDecimalString = decimalString.substring(0, 2);
-            String formattedXpString = xpInM + "." + formattedDecimalString;
-            if (formattedXpString.length() > 4) {
-                formattedXpString = formattedXpString.substring(0, 4);
-            }
-            if ((Character.toString(formattedXpString.charAt(formattedXpString.length()-1))).equals(".")) {
-                formattedXpString = formattedXpString.substring(0, formattedXpString.length()-1);
+            int decimalPart = xpToFormat%1000000;
+            //System.out.println(xpToFormat + ", " + xpInK + ", " + decimalPart);
+            result = Integer.toString(xpInM);
+            if (decimalPart > 0) {
+                result = result + "." + decimalPart;
+                while (result.charAt(result.length()-1) == '0')
+                    result = result.substring(0, result.length()-1);
             }
 
-            formattedXpString += "M";
-            result = formattedXpString;
+
+            result = result + "M";
         }
 
         return result;
     }
+
+    public void printFormattedXp() {
+        for (int i = 0; i < grapherPlugin.xpGraphPointManager.xpGraphMaxValues.length; i++) {
+            System.out.println(formatXpString(grapherPlugin.xpGraphPointManager.xpGraphMaxValues[i]));
+        }
+    }
+
+
 
     LayoutableRenderableEntity graphEntity = new LayoutableRenderableEntity() {
 
@@ -255,11 +285,37 @@ public class XpGrapherOverlay extends OverlayPanel {
             graphics.drawLine(bottomRightGraphX+1, bottomLeftGraphY, bottomRightGraphX+1, bottomLeftGraphY + bottomAxisTickMarkLength);
 
             long timePassed = grapherPlugin.currentTime - grapherPlugin.startTime;
-            String timeStartLabel = "0:00";
+            String timeStartLabel = "0";
             int timeStartLabelWidth = graphics.getFontMetrics().stringWidth(timeStartLabel);
             int timeStartLabelHeight = graphics.getFontMetrics().getHeight();
             graphics.drawString(timeStartLabel, bottomLeftGraphX-timeStartLabelWidth/2, bottomLeftGraphY+timeStartLabelHeight+marginTimeLabelTop);
 
+            //int secondsPassed = (int)timePassed/1000;
+            //int timePassedHours = secondsPassed/(60*60);
+            //int secondsLeft = secondsPassed%(60*60);
+            //int timePassedMinutes = secondsLeft/60;
+            //int timePassedSeconds = secondsLeft%60;
+
+
+
+            //String timeEndLabel = timePassedHoursString + ":" + timePassedMinutesString + ":" + timePassedSecondsString;
+
+            //String timeEndLabel = formatTime(timePassedHours, timePassedMinutes, timePassedSeconds);
+            String timeEndLabel = formatTime(timePassed);
+            /*
+            if (timePassedHours > 0)
+                timeEndLabel += timePassedHours + ":";
+            if (timePassedMinutes > 0 || timePassedHours > 0) {
+                if (timePassedMinutes < 10 && timePassedHours > 0)
+                    timeEndLabel += "0";
+                timeEndLabel += timePassedMinutes + ":";
+            }
+            if (timePassedSeconds < 10 && (timePassedMinutes > 0|| timePassedHours > 0))
+                timeEndLabel += "0";
+            timeEndLabel += timePassedSeconds;
+            */
+
+            /*
             int secondsPassed = (int)(timePassed/1000);
             int timePassedMinutes = secondsPassed/60;
             int secondsLeft = secondsPassed%60;
@@ -268,9 +324,12 @@ public class XpGrapherOverlay extends OverlayPanel {
                 secondsLeftString = "0" + secondsLeftString;
             }
             String timeEndLabel = timePassedMinutes + ":" + secondsLeftString;
+            */
+
             int timeEndLabelWidth = graphics.getFontMetrics().stringWidth(timeEndLabel);
             int timeEndLabelHeight = graphics.getFontMetrics().getHeight();
             graphics.drawString(timeEndLabel, bottomRightGraphX-timeEndLabelWidth/2, bottomLeftGraphY+timeEndLabelHeight+marginTimeLabelTop);
+
 
             //xp rate data
             if (grapherPlugin.currentlyGraphedSkills.size() > 0) {
