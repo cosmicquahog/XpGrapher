@@ -15,7 +15,7 @@ public class XpGraphPointManager {
 
     public int maxVertAxisValue = 0;
 
-    private int[] xpGraphMaxValues = {
+    public int[] xpGraphMaxValues = {
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
             12, 15, 20, 25, 30, 40, 50, 60, 80, 100,
             125, 150, 200, 250, 300, 400, 500, 600, 800, 1000,
@@ -25,6 +25,8 @@ public class XpGraphPointManager {
             1250000, 1500000, 2000000, 2500000, 3000000, 4000000, 5000000, 6000000, 8000000, 10000000,
             12500000, 15000000, 20000000, 25000000, 30000000, 40000000, 50000000, 60000000, 80000000, 100000000
     };
+
+
 
     public XpGraphPointManager(XpGrapherPlugin grapherPlugin) {
 
