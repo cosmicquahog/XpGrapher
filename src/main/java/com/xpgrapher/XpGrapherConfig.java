@@ -102,7 +102,7 @@ public interface XpGrapherConfig extends Config
 			name = "Background Transparency",
 			description = "The background transparency."
 	)
-	default int graphBackgroundTransparency() { return 7; }
+	default int graphBackgroundTransparency() { return 70; }
 
 
 
