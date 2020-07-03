@@ -1,10 +1,7 @@
 package com.xpgrapher;
 
 import net.runelite.api.Skill;
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigSection;
+import net.runelite.client.config.*;
 
 import java.awt.*;
 
@@ -59,22 +56,20 @@ public interface XpGrapherConfig extends Config
 
 	@ConfigItem(
 			position = 4,
+			keyName = "displayXpRate",
+			name = "Display XP/hr",
+			description = ""
+	)
+	default boolean displayXpRate() { return true; }
+
+	@ConfigItem(
+			position = 5,
 			keyName = "maxSkillsToGraph",
 			name = "# of Skills to Graph",
 			description = ""
 	)
 	default int maxSkillsToGraph() {
 		return 8;
-	}
-
-	@ConfigItem(
-			position = 5,
-			keyName = "graphBackgroundColor",
-			name = "Background Color",
-			description = "The background color of the graph."
-	)
-	default Color graphBackgroundColor() {
-		return new Color(132, 109,  71, 200);
 	}
 
 	@ConfigItem(
@@ -86,6 +81,30 @@ public interface XpGrapherConfig extends Config
 	default Color graphColor() {
 		return new Color(56, 36, 24);
 	}
+
+	@ConfigItem(
+			position = 7,
+			keyName = "graphBackgroundColor",
+			name = "Background Color",
+			description = "The background color of the graph."
+	)
+	default Color graphBackgroundColor() {
+		return new Color(132, 109,  71, 200);
+	}
+
+	@Range(
+			min = 1,
+			max = 100
+	)
+	@ConfigItem(
+			position = 8,
+			keyName = "graphBackgroundTransparency",
+			name = "Background Transparency",
+			description = "The background transparency."
+	)
+	default int graphBackgroundTransparency() { return 7; }
+
+
 
 	@ConfigItem(
 			position = 101,
@@ -100,7 +119,7 @@ public interface XpGrapherConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 7,
+			position = 9,
 			keyName = "defenceColor",
 			name = "Defence Color",
 			description = "Color of the Defence graph line",
@@ -112,7 +131,7 @@ public interface XpGrapherConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 8,
+			position = 9,
 			keyName = "strengthColor",
 			name = "Strength Color",
 			description = "Color of the Strength graph line",
