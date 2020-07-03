@@ -25,6 +25,7 @@ public class XpGrapherOverlay extends OverlayPanel {
     private Color textColor = Color.WHITE;
     private Color graphLineColor;
     private Color backgroundColor;
+    private int backgroundTransparency;
 
     private int marginGraphLeft = 43;
     private int marginGraphTop = 11;
@@ -60,9 +61,14 @@ public class XpGrapherOverlay extends OverlayPanel {
         this.grapherPlugin = grapherPlugin;
         graphLineColor = grapherPlugin.config.graphColor();
         backgroundColor = grapherPlugin.config.graphBackgroundColor();
+        backgroundTransparency = grapherPlugin.config.graphBackgroundTransparency();
         setLayer(OverlayLayer.ABOVE_WIDGETS);
         setPosition(OverlayPosition.BOTTOM_LEFT);
 
+    }
+
+    private int convertTransparency(int configTransparency) {
+        return (int)(255*((double)configTransparency/(double)100));
     }
 
     private String formatTime(long timePassed) {
@@ -141,6 +147,7 @@ public class XpGrapherOverlay extends OverlayPanel {
 
             graphLineColor = grapherPlugin.config.graphColor();
             backgroundColor = grapherPlugin.config.graphBackgroundColor();
+            backgroundTransparency = convertTransparency(grapherPlugin.config.graphBackgroundTransparency());
 
             if (!grapherPlugin.config.displayKey()) {
                 int currentWidth = this.getBounds().width;
@@ -152,7 +159,12 @@ public class XpGrapherOverlay extends OverlayPanel {
             }
 
             //overlay background box
-            graphics.setColor(backgroundColor);
+            int r = backgroundColor.getRed();
+            int g = backgroundColor.getGreen();
+            int b = backgroundColor.getBlue();
+            Color backgroundColorTrans = new Color(r, g, b, backgroundTransparency);
+
+            graphics.setColor(backgroundColorTrans);
             //graphics.fillRect(0, 0, this.getBounds().width, this.getBounds().height);
             graphics.fillRect(0, 0, marginGraphLeft+grapherPlugin.graphWidth+marginGraphRight+marginOverlayRight, this.getBounds().height);
 
@@ -239,7 +251,7 @@ public class XpGrapherOverlay extends OverlayPanel {
                 int legendY = marginGraphTop;
 
                 //legend background box
-                graphics.setColor(backgroundColor);
+                graphics.setColor(backgroundColorTrans);
                 graphics.fillRect(legendX, legendY, legendWidth, legendHeight);
 
                 //legend border box
@@ -332,7 +344,7 @@ public class XpGrapherOverlay extends OverlayPanel {
 
 
             //xp rate data
-            if (grapherPlugin.currentlyGraphedSkills.size() > 0) {
+            if (grapherPlugin.config.displayXpRate() && grapherPlugin.currentlyGraphedSkills.size() > 0) {
                 int endingSkillXp;
                 if (grapherPlugin.tickCount > 0)
                     endingSkillXp = grapherPlugin.xpDataManager.getXpData(grapherPlugin.mostRecentSkillGained, grapherPlugin.tickCount-1);
