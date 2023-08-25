@@ -59,7 +59,7 @@ public class XpGraphColorManager {
             //construction
             new Color(220, 190, 255),
             //overall
-            new Color(143, 106, 35),
+            //new Color(143, 106, 35),
     };
 
     public XpGraphColorManager(XpGrapherPlugin grapherPlugin) {
