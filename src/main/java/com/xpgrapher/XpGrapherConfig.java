@@ -79,8 +79,11 @@ public interface XpGrapherConfig extends Config
 			description = "The color of the graph lines, text and border"
 	)
 	default Color graphColor() {
-		return new Color(56, 36, 24);
+		return new Color(0, 0, 0);
 	}
+	//default Color graphColor() {
+		//return new Color(56, 36, 24);
+	//}
 
 	@ConfigItem(
 			position = 7,
@@ -89,8 +92,12 @@ public interface XpGrapherConfig extends Config
 			description = "The background color of the graph."
 	)
 	default Color graphBackgroundColor() {
-		return new Color(132, 109,  71, 200);
+		return new Color(115, 115, 115, 255);
 	}
+	//default Color graphBackgroundColor() {
+	//	return new Color(132, 109,  71, 200);
+	//}
+
 
 	@Range(
 			min = 1,
