@@ -382,7 +382,7 @@ public class XpGrapherOverlay extends OverlayPanel {
 
                 int messageHeight = graphics.getFontMetrics().getHeight();
 
-                String message1 = "Gain xp to start";
+                String message1 = "Gain any XP to start graph";
                 int message1Width = graphics.getFontMetrics().stringWidth(message1);
                 //int message1x = marginGraphLeft+grapherPlugin.graphWidth/2-message1Width/2;
                 int message1x = overlayWidth/2-message1Width/2;
@@ -391,7 +391,7 @@ public class XpGrapherOverlay extends OverlayPanel {
                 int startingYOffset = this.getBounds().height/2 - totalMessageHeight/2;
                 int message1y = marginGraphTop+startingYOffset;
 
-                String message2 = "Alt+drag to move";
+                String message2 = "ALT + Drag to move";
                 int message2Width = graphics.getFontMetrics().stringWidth(message2);
                 //int message2x = marginGraphLeft+grapherPlugin.graphWidth/2-message2Width/2;
                 int message2x = overlayWidth/2-message2Width/2;
