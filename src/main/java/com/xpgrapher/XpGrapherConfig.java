@@ -79,7 +79,7 @@ public interface XpGrapherConfig extends Config
 			description = "The color of the graph lines, text and border"
 	)
 	default Color graphColor() {
-		return new Color(0, 0, 0);
+		return new Color(56, 36, 24);
 	}
 	//default Color graphColor() {
 		//return new Color(56, 36, 24);
